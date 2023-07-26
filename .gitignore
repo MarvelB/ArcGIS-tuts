@@ -29,3 +29,6 @@ dist-ssr
 .env.production
 .env.staging
 .env.test
+
+# Ignore public dev files
+public/assets/*
