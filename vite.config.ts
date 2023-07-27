@@ -12,7 +12,11 @@ export default defineConfig({
         {
           src: "node_modules/@esri/calcite-components/dist/calcite/assets/*",
           dest: "assets/",
-          overwrite: true,
+        },
+        // Configure calcite themes to be used in our app
+        {
+          src: "node_modules/@arcgis/core/assets/esri/themes/*",
+          dest: "assets/themes/",
         },
       ],
     }),

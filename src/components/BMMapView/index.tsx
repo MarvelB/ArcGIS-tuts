@@ -24,6 +24,7 @@ import {
   CalciteRating,
   CalciteShell,
   CalciteShellPanel,
+  CalciteSwitch,
 } from "@esri/calcite-components-react";
 
 export interface BMMapViewWidgetProps {
@@ -46,7 +47,10 @@ const initialWidgetVisibility: BMMapViewWidgetProps = {
 
 const BMMapView = () => {
   const [ref, webMap, webMapView] = useBMWebMap(
-    { portalItem: { id: "210c5b77056846808c7a5ce93920be81" } },
+    {
+      portalItem: { id: "210c5b77056846808c7a5ce93920be81" },
+      // basemap: "gray-vector",
+    },
     { padding: { top: 49 } }
   );
 
@@ -56,6 +60,10 @@ const BMMapView = () => {
   const legendRef = useRef<HTMLDivElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
+  const [isLightMode, setIsLightMode] = useState<boolean>(true);
+
+  const currentThemeClass = `calcite-mode-${isLightMode ? "light" : "dark"}`;
+
   const [mapDescription, setMapDescription] = useState<MapInfoModel>({
     headerTitle: "",
     mapDescription: "",
@@ -63,7 +71,7 @@ const BMMapView = () => {
     avgRating: 0,
   });
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const loading = useRef<boolean>(true);
 
   const [widgetsVisibility, setWidgetsVisibility] =
     useState<BMMapViewWidgetProps>(initialWidgetVisibility);
@@ -80,6 +88,27 @@ const BMMapView = () => {
     }));
   };
 
+  const toggleTheme = (e: React.MouseEvent<HTMLCalciteLabelElement>) => {
+    e.preventDefault();
+
+    setIsLightMode(!isLightMode);
+  };
+
+  useEffect(() => {
+    const head = document.head;
+    const link = document.createElement("link");
+
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = `./assets/themes/${isLightMode ? "light" : "dark"}/main.css`;
+
+    head.appendChild(link);
+
+    return () => {
+      head.removeChild(link);
+    };
+  }, [isLightMode]);
+
   useEffect(() => {
     if (!webMapView || webMapView === null || !webMap || webMap === null)
       return;
@@ -90,6 +119,7 @@ const BMMapView = () => {
       view: webMapView,
       container: basemaGalleryRef.current!,
     });
+
     const bookMarks = new Bookmarks({
       view: webMapView,
       container: bookmarksRef.current!,
@@ -108,7 +138,7 @@ const BMMapView = () => {
     webMapView.when(() => {
       const { title, description, thumbnailUrl, avgRating } = webMap.portalItem;
 
-      setLoading(false);
+      loading.current = false;
       console.log("here");
       setMapDescription({
         headerTitle: title,
@@ -122,8 +152,13 @@ const BMMapView = () => {
   }, [webMapView, webMap]);
 
   return (
-    <Box height="inherit" width="100%" paddingX="auto">
-      {loading && (
+    <Box
+      height="inherit"
+      width="100%"
+      paddingX="auto"
+      className={currentThemeClass}
+    >
+      {loading.current && (
         <Box
           display="flex"
           alignItems="center"
@@ -136,15 +171,37 @@ const BMMapView = () => {
 
       <CalciteShell
         contentBehind
-        style={{ visibility: loading ? "hidden" : "visible" }}
+        style={{ visibility: loading.current ? "hidden" : "visible" }}
       >
-        <h2 slot="header">{mapDescription.headerTitle}</h2>
-
-        <CalciteShellPanel
-          slot="panel-start"
-          displayMode="float"
-          hidden={loading}
+        <Box
+          slot="header"
+          id="header"
+          display="flex"
+          padding="0 1rem"
+          sx={{ backgroundColor: "var(--calcite-ui-foreground-1)" }}
         >
+          <h2 slot="header-title">{mapDescription.headerTitle}</h2>
+
+          <Box
+            slot="header-controls"
+            id="header-controls"
+            display="flex"
+            alignSelf="auto"
+            sx={{ marginInlineStart: "auto" }}
+          >
+            <CalciteLabel
+              layout="inline"
+              style={{ "--calcite-label-margin-bottom": 0, cursor: "pointer" }}
+              onClick={toggleTheme}
+            >
+              Dark mode: Off
+              <CalciteSwitch style={{ margin: "0 0.5rem" }}></CalciteSwitch>
+              On
+            </CalciteLabel>
+          </Box>
+        </Box>
+
+        <CalciteShellPanel slot="panel-start" displayMode="float">
           <CalciteActionBar slot="action-bar">
             <CalciteAction
               text="Layers"
@@ -184,7 +241,11 @@ const BMMapView = () => {
           </CalciteActionBar>
 
           <CalcitePanel heading="Layers" hidden={!widgetsVisibility.layerList}>
-            <Box ref={layerListRef} />
+            <Box
+              id="layers-container"
+              ref={layerListRef}
+              className="calcite-mode-dark"
+            />
           </CalcitePanel>
 
           <CalcitePanel
@@ -240,7 +301,7 @@ const BMMapView = () => {
           </CalcitePanel>
         </CalciteShellPanel>
 
-        <Box ref={ref} height="100%" />
+        <Box ref={ref} height="100%" className="calcite-mode-light" />
       </CalciteShell>
     </Box>
   );
