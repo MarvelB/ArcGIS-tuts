@@ -35,13 +35,13 @@ const useBMMap = (
   }, []);
 
   useEffect(() => {
-    if (!mapView || !mapProps || !mapProps.basemap) return;
+    if (!mapView || !mapProps?.basemap) return;
 
     mapView.map.basemap =
       typeof mapProps.basemap === "string"
         ? Basemap.fromId(mapProps.basemap!)
         : new Basemap(mapProps.basemap!);
-  }, [mapView, mapProps]);
+  }, [mapView, mapProps.basemap]);
 
   return [mapRef, map, mapView];
 };

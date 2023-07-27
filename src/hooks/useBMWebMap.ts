@@ -35,13 +35,13 @@ const useBMWebMap = (
   }, []);
 
   useEffect(() => {
-    if (!webMapView || !mapProps || !mapProps.basemap) return;
+    if (!webMapView || !mapProps?.basemap) return;
 
     webMapView.map.basemap =
       typeof mapProps.basemap === "string"
         ? Basemap.fromId(mapProps.basemap!)
         : new Basemap(mapProps.basemap!);
-  }, [webMapView, mapProps]);
+  }, [webMapView, mapProps.basemap]);
 
   return [mapRef, webMap, webMapView];
 };

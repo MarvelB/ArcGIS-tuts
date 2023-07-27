@@ -46,10 +46,12 @@ const initialWidgetVisibility: BMMapViewWidgetProps = {
 };
 
 const BMMapView = () => {
+  const [isLightMode, setIsLightMode] = useState<boolean>(true);
+
   const [ref, webMap, webMapView] = useBMWebMap(
     {
       portalItem: { id: "210c5b77056846808c7a5ce93920be81" },
-      // basemap: "gray-vector",
+      basemap: isLightMode ? "gray-vector" : "dark-gray-vector",
     },
     { padding: { top: 49 } }
   );
@@ -59,8 +61,6 @@ const BMMapView = () => {
   const layerListRef = useRef<HTMLDivElement>(null);
   const legendRef = useRef<HTMLDivElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
-
-  const [isLightMode, setIsLightMode] = useState<boolean>(true);
 
   const currentThemeClass = `calcite-mode-${isLightMode ? "light" : "dark"}`;
 
@@ -139,7 +139,7 @@ const BMMapView = () => {
       const { title, description, thumbnailUrl, avgRating } = webMap.portalItem;
 
       loading.current = false;
-      console.log("here");
+
       setMapDescription({
         headerTitle: title,
         mapDescription: description,
