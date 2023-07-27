@@ -19,6 +19,7 @@ import {
   CalciteAction,
   CalciteActionBar,
   CalciteLabel,
+  CalciteLoader,
   CalcitePanel,
   CalciteRating,
   CalciteShell,
@@ -55,18 +56,14 @@ const BMMapView = () => {
   const legendRef = useRef<HTMLDivElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
-  // const [baseMaps, setBaseMaps] = useState<BasemapGallery>();
-  // const [bookmarks, setBookmarks] = useState<Bookmarks>();
-  // const [layerList, setLayerList] = useState<LayerList>();
-  // const [legend, setLegend] = useState<Legend>();
-  // const [print, setPrint] = useState<Print>();
-
   const [mapDescription, setMapDescription] = useState<MapInfoModel>({
     headerTitle: "",
     mapDescription: "",
     thumbnailUrl: "",
     avgRating: 0,
   });
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [widgetsVisibility, setWidgetsVisibility] =
     useState<BMMapViewWidgetProps>(initialWidgetVisibility);
@@ -111,6 +108,8 @@ const BMMapView = () => {
     webMapView.when(() => {
       const { title, description, thumbnailUrl, avgRating } = webMap.portalItem;
 
+      setLoading(false);
+      console.log("here");
       setMapDescription({
         headerTitle: title,
         mapDescription: description,
@@ -123,11 +122,29 @@ const BMMapView = () => {
   }, [webMapView, webMap]);
 
   return (
-    <Box width="100%" paddingX="auto">
-      <CalciteShell contentBehind>
+    <Box height="inherit" width="100%" paddingX="auto">
+      {loading && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          height="inherit"
+        >
+          <CalciteLoader label="" />
+        </Box>
+      )}
+
+      <CalciteShell
+        contentBehind
+        style={{ visibility: loading ? "hidden" : "visible" }}
+      >
         <h2 slot="header">{mapDescription.headerTitle}</h2>
 
-        <CalciteShellPanel slot="panel-start" displayMode="float">
+        <CalciteShellPanel
+          slot="panel-start"
+          displayMode="float"
+          hidden={loading}
+        >
           <CalciteActionBar slot="action-bar">
             <CalciteAction
               text="Layers"
