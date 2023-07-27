@@ -1,11 +1,11 @@
 import BMMapView from "@/components/BMMapView";
+import { Box } from "@mui/material";
 
 const App = () => {
   return (
-    <BMMapView
-      mapProps={{ basemap: "arcgis-topographic" }}
-      mapViewProperties={{ center: [-118, 34], zoom: 8 }}
-    />
+    <Box className="app">
+      <BMMapView />
+    </Box>
   );
 };
 

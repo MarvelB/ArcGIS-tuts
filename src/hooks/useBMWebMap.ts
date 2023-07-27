@@ -1,27 +1,27 @@
 import { Esri } from "@/types";
 import { useEffect, useRef, useState } from "react";
-import Map from "@arcgis/core/Map";
+import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import Basemap from "@arcgis/core/Basemap";
 
-const useBMMap = (
-  mapProps: Esri.MapProperties,
+const useBMWebMap = (
+  mapProps: Esri.WebMapProperties,
   mapViewProps?: Omit<Esri.MapViewProperties, "map" | "container">
 ): [
   React.MutableRefObject<null> | null,
-  Esri.Map | undefined,
-  Esri.MapView | undefined
+  WebMap | undefined,
+  MapView | undefined
 ] => {
   const mapRef = useRef(null);
 
-  const [mapView, setMapView] = useState<MapView>();
+  const [webMapView, setWebMapView] = useState<MapView>();
 
-  const [map, setMap] = useState<Map>();
+  const [webMap, setWebMap] = useState<WebMap>();
 
   useEffect(() => {
-    const map = new Map(mapProps);
+    const map = new WebMap(mapProps);
 
-    setMap(map);
+    setWebMap(map);
 
     const view = new MapView({
       ...mapViewProps,
@@ -29,21 +29,21 @@ const useBMMap = (
       container: mapRef.current ?? undefined,
     });
 
-    setMapView(view);
+    setWebMapView(view);
 
-    return () => mapView?.destroy();
+    return () => webMapView?.destroy();
   }, []);
 
   useEffect(() => {
-    if (!mapView || !mapProps || !mapProps.basemap) return;
+    if (!webMapView || !mapProps || !mapProps.basemap) return;
 
-    mapView.map.basemap =
+    webMapView.map.basemap =
       typeof mapProps.basemap === "string"
         ? Basemap.fromId(mapProps.basemap!)
         : new Basemap(mapProps.basemap!);
-  }, [mapView, mapProps]);
+  }, [webMapView, mapProps]);
 
-  return [mapRef, map, mapView];
+  return [mapRef, webMap, webMapView];
 };
 
-export default useBMMap;
+export default useBMWebMap;

@@ -16,6 +16,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@esri/calcite-components": "^1.4.3",
+    "@esri/calcite-components-react": "^1.4.3",
     "@mui/material": "^5.14.1",
     "esri-loader": "^2.16.0",
     "esri-loader-hooks": "^0.4.0",
@@ -34,6 +35,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "prettier": "^2.8.8",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-static-copy": "^0.17.0"
   }
 }
