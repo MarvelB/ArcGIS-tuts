@@ -6,7 +6,8 @@ import Basemap from "@arcgis/core/Basemap";
 
 const useBMMap = (
   mapProps: Esri.MapProperties,
-  mapViewProps?: Omit<Esri.MapViewProperties, "map" | "container">
+  mapViewProps?: Omit<Esri.MapViewProperties, "map" | "container">,
+  skip?: boolean
 ): [
   React.MutableRefObject<null> | null,
   Esri.Map | undefined,
@@ -19,6 +20,8 @@ const useBMMap = (
   const [map, setMap] = useState<Map>();
 
   useEffect(() => {
+    if (skip) return;
+
     const map = new Map(mapProps);
 
     setMap(map);
@@ -32,7 +35,7 @@ const useBMMap = (
     setMapView(view);
 
     return () => mapView?.destroy();
-  }, []);
+  }, [skip]);
 
   useEffect(() => {
     if (!mapView || !mapProps?.basemap) return;

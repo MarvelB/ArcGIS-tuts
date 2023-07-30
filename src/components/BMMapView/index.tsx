@@ -11,10 +11,12 @@ import { useEffect, useRef, useState } from "react";
 import "@esri/calcite-components/dist/components/calcite-action";
 import "@esri/calcite-components/dist/components/calcite-action-bar";
 import "@esri/calcite-components/dist/components/calcite-label";
+import "@esri/calcite-components/dist/components/calcite-loader";
 import "@esri/calcite-components/dist/components/calcite-panel";
 import "@esri/calcite-components/dist/components/calcite-rating";
 import "@esri/calcite-components/dist/components/calcite-shell";
 import "@esri/calcite-components/dist/components/calcite-shell-panel";
+import "@esri/calcite-components/dist/components/calcite-switch";
 import {
   CalciteAction,
   CalciteActionBar,
@@ -148,7 +150,13 @@ const BMMapView = () => {
       });
     });
 
-    // return () => webMapView.when;
+    return () => {
+      baseMap.destroy();
+      bookMarks.destroy();
+      layerList.destroy();
+      legend.destroy();
+      print.destroy();
+    };
   }, [webMapView, webMap]);
 
   return (

@@ -1,0 +1,10 @@
+.calcite-tutorial {
+  --calcite-ui-brand: #039851;
+  --calcite-ui-brand-hover: #008d52;
+}
+
+.calcite-tutorial calcite-chip {
+  --calcite-ui-foreground-2: var(--calcite-ui-brand);
+  --calcite-ui-text-1: white;
+  margin-inline-end: 0.75rem;
+}

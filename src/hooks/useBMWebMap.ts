@@ -6,7 +6,8 @@ import Basemap from "@arcgis/core/Basemap";
 
 const useBMWebMap = (
   mapProps: Esri.WebMapProperties,
-  mapViewProps?: Omit<Esri.MapViewProperties, "map" | "container">
+  mapViewProps?: Omit<Esri.MapViewProperties, "map" | "container">,
+  skip?: boolean
 ): [
   React.MutableRefObject<null> | null,
   WebMap | undefined,
@@ -19,6 +20,8 @@ const useBMWebMap = (
   const [webMap, setWebMap] = useState<WebMap>();
 
   useEffect(() => {
+    if (skip) return;
+
     const map = new WebMap(mapProps);
 
     setWebMap(map);
@@ -32,7 +35,7 @@ const useBMWebMap = (
     setWebMapView(view);
 
     return () => webMapView?.destroy();
-  }, []);
+  }, [skip]);
 
   useEffect(() => {
     if (!webMapView || !mapProps?.basemap) return;
